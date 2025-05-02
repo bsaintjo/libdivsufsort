@@ -30,3 +30,6 @@
 
 # CMake files/directories
 build/
+
+# Buck files/directories
+buck-out/
