@@ -25,10 +25,12 @@ cmake -DCMAKE_INSTALL_PREFIX=$OUT \
     ..
 make && make install
 cp -L include/lfs.h $OUT/include/lfs.h
+cp -L include/config.h $OUT/include/config.h
 """,
     outs = {
         "divsufsort.h": ["include/divsufsort.h"],
         "lfs.h": ["include/lfs.h"],
+        "config.h": ["include/config.h"],
         "lib": ["lib/libdivsufsort.a"],
     }
 )
@@ -45,21 +47,30 @@ export_file(
     out = "lfs.h",
 )
 
+export_file(
+    name = "libdivsufsort/header/config.h",
+    src = ":libdivsufsort/cmake[config.h]",
+    out = "config.h",
+)
+
 cxx_library(
     name = "libdivsufsort",
     exported_headers = [
+        ":libdivsufsort/header/divsufsort.h",
         ":libdivsufsort/header/lfs.h",
-        ":libdivsufsort/header/divsufsort.h"
+        ":libdivsufsort/header/config.h",
     ],
     public_include_directories = [
+        ":libdivsufsort/header/divsufsort.h",
         ":libdivsufsort/header/lfs.h",
-        ":libdivsufsort/header/divsufsort.h"
+        ":libdivsufsort/header/config.h",
     ],
     exported_linker_flags = ["$(location :libdivsufsort/cmake[lib])"],
 )
 
 cxx_binary(
     name = "example",
-    srcs = ["example.cpp"],
+    # srcs = ["example.cpp"],
+    srcs = ["examples/suftest.c"],
     deps = [":libdivsufsort"],
 )
